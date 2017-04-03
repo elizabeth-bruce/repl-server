@@ -7,8 +7,9 @@ const express = require('express'),
 let router = express.Router();
 
 router.post(
-  '/', 
-  passport.authenticate('api', { session: false }),
+  '/',
+  // TODO: Reenable user authentication after MVP 
+  // passport.authenticate('api', { session: false }),
   (req, res) => res.json({ uuid: SessionRegistry.getInstance().add(uuid.v4()) })
 );
 
@@ -18,6 +19,10 @@ router.ws('/:sessionId', (ws, req) => {
     if (!session.token) {
         session.token = uuid.v4();
         session.save();
+    }
+
+    if (!SessionRegistry.getInstance().hasSession(req.params['sessionId'])) {
+        res.send(401, 'Session not found');
     }
 
     const sessionState = new SessionConnectionState(req.params['sessionId'], ws, req.session.token);
