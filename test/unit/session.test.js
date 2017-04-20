@@ -41,7 +41,7 @@ describe('Session', () => {
                     userId: 'abcde',
                     code: 'let a = 5',
                 },
-                eventType: 'executionSuccess'
+                type: 'executionSuccess'
             };
 
             session.userClient = MockSessionUserClient;
@@ -65,7 +65,7 @@ describe('Session', () => {
                         code: 'warglbargl',
                         error: 'warglbargl is not defined'
                     },
-                    eventType: 'executionFailure'
+                    type: 'executionFailure'
                 };
 
                 session.userClient = MockSessionUserClient;

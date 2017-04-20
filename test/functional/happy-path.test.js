@@ -23,14 +23,14 @@ describe('happy path server interaction', () => {
             return client.waitForMessages(3);
         }).then((messages) => {
             const parsedMessages = messages.map((message) => message.data).map(JSON.parse);
-            expect(parsedMessages[0].eventType).toEqual('registerUser');
+            expect(parsedMessages[0].type).toEqual('registerUser');
             expect(parsedMessages[0].data.userId).not.toBeUndefined();
 
-            expect(parsedMessages[1].eventType).toEqual('registerAlias');
+            expect(parsedMessages[1].type).toEqual('registerAlias');
             expect(parsedMessages[1].data.userId).not.toBeUndefined();
-            expect(parsedMessages[1].data.alias).not.toBeUndefined();
+            expect(parsedMessages[1].data.newAlias).not.toBeUndefined();
 
-            expect(parsedMessages[2].eventType).toEqual('connectUser');
+            expect(parsedMessages[2].type).toEqual('connectUser');
             expect(parsedMessages[2].data.userId).not.toBeUndefined();
         }).then(() => {
             return getActiveUsers(cookieJar, sessionId);
@@ -43,7 +43,7 @@ describe('happy path server interaction', () => {
         }).then((messages) => {
             const parsedMessage = JSON.parse(messages[0].data);
 
-            expect(parsedMessage.eventType).toEqual('executionSuccess');
+            expect(parsedMessage.type).toEqual('executionSuccess');
             expect(parsedMessage.data.userId).not.toBeUndefined();
             expect(parsedMessage.data.code).toEqual('let a = 5;');
         }).then(() => {
@@ -52,7 +52,7 @@ describe('happy path server interaction', () => {
         }).then((messages) => {
             const parsedMessage = JSON.parse(messages[0].data);
 
-            expect(parsedMessage.eventType).toEqual('executionSuccess');
+            expect(parsedMessage.type).toEqual('executionSuccess');
             expect(parsedMessage.data.userId).not.toBeUndefined();
             expect(parsedMessage.data.code).toEqual('a;');
             expect(parsedMessage.data.result).toEqual(5);

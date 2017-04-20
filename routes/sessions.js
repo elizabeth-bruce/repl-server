@@ -25,7 +25,8 @@ router.ws('/:sessionId', (ws, req) => {
     }
 
     if (!SessionRegistry.getInstance().hasSession(req.params['sessionId'])) {
-        res.send(401, 'Session not found');
+        ws.send('Session not found');
+        ws.close();
     }
 
     const sessionState = new SessionConnectionState(req.params['sessionId'], ws, req.session.token);

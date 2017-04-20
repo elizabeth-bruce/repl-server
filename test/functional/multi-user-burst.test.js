@@ -27,8 +27,7 @@ describe('multi-user scale test', () => {
             return clients[0].waitForMessages(1);
         }).then((messages) => {
             const message = JSON.parse(messages[0].data);
-
-            expect(message.eventType).toEqual('executionSuccess');
+            expect(message.type).toEqual('executionSuccess');
             expect(message.data.code).toEqual('let testArray = [];');
         }).then(() => {
             clients.forEach((client) => {
@@ -41,7 +40,7 @@ describe('multi-user scale test', () => {
         }).then((messages) => {
             const message = JSON.parse(messages[0].data);
 
-            expect(message.eventType).toEqual('executionSuccess');
+            expect(message.type).toEqual('executionSuccess');
             expect(message.data.code).toEqual('testArray.length;');
             expect(message.data.result).toEqual(NUM_CLIENTS);
 

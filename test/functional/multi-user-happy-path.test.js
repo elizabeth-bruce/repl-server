@@ -29,7 +29,7 @@ describe('multi-user happy path server interaction', () => {
         }).then((messages) => {
             const message = JSON.parse(messages[0].data);
 
-            expect(message.eventType).toEqual('executionSuccess');
+            expect(message.type).toEqual('executionSuccess');
             expect(message.data.code).toEqual('let a = 5;');
             expect(message.data.userId).toEqual(firstClientId);
         }).then(() => {
@@ -38,7 +38,7 @@ describe('multi-user happy path server interaction', () => {
         }).then((messages) => {
             const message = JSON.parse(messages[0].data);
 
-            expect(message.eventType).toEqual('executionSuccess');
+            expect(message.type).toEqual('executionSuccess');
             expect(message.data.code).toEqual('let b = 10;');
             expect(message.data.userId).toEqual(secondClientId);
         }).then(() => {
@@ -47,7 +47,7 @@ describe('multi-user happy path server interaction', () => {
         }).then((messages) => {
             const message = JSON.parse(messages[0].data);
 
-            expect(message.eventType).toEqual('executionSuccess');
+            expect(message.type).toEqual('executionSuccess');
             expect(message.data.code).toEqual('a + b;');
             expect(message.data.result).toEqual(15);
             expect(message.data.userId).toEqual(firstClientId);
