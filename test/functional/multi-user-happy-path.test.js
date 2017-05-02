@@ -7,20 +7,21 @@ const createSession = require('../support/create-session');
 
 describe('multi-user happy path server interaction', () => {
     it('completes a user journey successfully', (done) => {
-        let firstClient, secondClient, firstClientId, secondClientId;
+        let uuid, firstClient, secondClient, firstClientId, secondClientId;
 
         createSession().then((response) => {
             expect(response.uuid).not.toBeUndefined();
             return { uuid: response.uuid };
         }).then((data) => {
-            firstClient = replClient(data.uuid);
-            secondClient = replClient(data.uuid);
+            uuid = data.uuid;
         }).then(() => {
-            return firstClient.waitForMessages(3); 
+            firstClient = replClient(uuid);
+            return firstClient.waitForMessages(2); 
         }).then((messages) => {
             firstClientId = JSON.parse(messages[0].data).data.userId;
         }).then(() => {
-            return secondClient.waitForMessages(3);
+            secondClient = replClient(uuid);
+            return secondClient.waitForMessages(2);
         }).then((messages) => {
             secondClientId = JSON.parse(messages[0].data).data.userId;
         }).then(() => {
@@ -49,7 +50,7 @@ describe('multi-user happy path server interaction', () => {
 
             expect(message.type).toEqual('executionSuccess');
             expect(message.data.code).toEqual('a + b;');
-            expect(message.data.result).toEqual(15);
+            expect(message.data.result).toEqual('15');
             expect(message.data.userId).toEqual(firstClientId);
 
             done();

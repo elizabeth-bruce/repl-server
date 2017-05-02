@@ -1,20 +1,31 @@
 const express = require('express'),
   passport = require('passport'),
+  cors = require('cors'),
   uuid = require('node-uuid'),
   SessionRegistry = require('../lib/session-registry'),
-  SessionConnectionState = require('../lib/session-connection-state'); 
+  SessionConnectionState = require('../lib/session-connection-state'),
+  Config = require('../config/config');
  
 let router = express.Router();
+
+const corsOptions = {
+  origin: Config.FRONTEND_WHITELIST_DOMAIN,
+  credentials: true
+};
+
+router.options('*', cors(corsOptions));
 
 router.post(
   '/',
   // TODO: Reenable user authentication after MVP 
   // passport.authenticate('api', { session: false }),
+  cors(corsOptions),
   (req, res) => {
-        res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
         res.json({ uuid: SessionRegistry.getInstance().add(uuid.v4()) });
    }
 );
+
+router.ws('/', (ws, req) => {});
 
 router.ws('/:sessionId', (ws, req) => {
     let session = req.session;
@@ -25,8 +36,8 @@ router.ws('/:sessionId', (ws, req) => {
     }
 
     if (!SessionRegistry.getInstance().hasSession(req.params['sessionId'])) {
-        ws.send('Session not found');
         ws.close();
+        return;
     }
 
     const sessionState = new SessionConnectionState(req.params['sessionId'], ws, req.session.token);
@@ -36,25 +47,26 @@ router.ws('/:sessionId', (ws, req) => {
   }
 );
 
-router.post('/:sessionId/alias', (req, res) => {
-    let session = req.session,
-        body = JSON.parse(req.body);
+router.post('/:sessionId/alias', cors(corsOptions), (req, res) => {
+    let session = req.session;
+    const body = req.body;
 
     if (!session.token) {
-        res.send(401, 'No authorization token');
+        res.status(401).send('No authorization token');
     }
 
     if (!SessionRegistry.getInstance().hasSession(req.params['sessionId'])) {
-        res.send(401, 'Session not found');
+        res.status(401).send('Session not found');
     }
 
     SessionRegistry.getInstance().registerAlias(req.params['sessionId'], session.token, body.alias);
 
+    res.status(200).send('SUCCESS');
 });
 
 // Empty response solely for the Set-Cookie header
 // that enables identification/communication with the rest of the endpoints in /sessions
-router.get('/touch', (req, res) => {
+router.get('/touch', cors(corsOptions), (req, res) => {
     let session = req.session;
     if (!session.token) {
         session.token = uuid.v4();
@@ -64,20 +76,20 @@ router.get('/touch', (req, res) => {
     res.json();
 });
 
-router.get('/:sessionId/activeUsers', (req, res) => {
+router.get('/:sessionId/activeUsers', cors(corsOptions), (req, res) => {
     let session = req.session;
 
     if (!session.token) {
-        res.send(401, 'No authorization token');
+        res.status(401).send('No authorization token');
     }
 
     if (!SessionRegistry.getInstance().hasSession(req.params['sessionId'])) {
-        res.send(401, 'Session not found');
+        res.status(401).send('Session not found');
     }
 
     const activeUsers = SessionRegistry.getInstance().getActiveUsers(req.params['sessionId']);
 
-    res.json(JSON.stringify([...activeUsers]));
+    res.json([...activeUsers]);
 });
 
 module.exports = router;

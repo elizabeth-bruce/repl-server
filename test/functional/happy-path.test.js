@@ -20,22 +20,18 @@ describe('happy path server interaction', () => {
             return { uuid: sessionId};
         }).then((data) => {
             client = replClient(data.uuid);
-            return client.waitForMessages(3);
+            return client.waitForMessages(2);
         }).then((messages) => {
             const parsedMessages = messages.map((message) => message.data).map(JSON.parse);
             expect(parsedMessages[0].type).toEqual('registerUser');
             expect(parsedMessages[0].data.userId).not.toBeUndefined();
 
-            expect(parsedMessages[1].type).toEqual('registerAlias');
+            expect(parsedMessages[1].type).toEqual('connectUser');
             expect(parsedMessages[1].data.userId).not.toBeUndefined();
-            expect(parsedMessages[1].data.newAlias).not.toBeUndefined();
-
-            expect(parsedMessages[2].type).toEqual('connectUser');
-            expect(parsedMessages[2].data.userId).not.toBeUndefined();
         }).then(() => {
             return getActiveUsers(cookieJar, sessionId);
         }).then((message) => {
-           const users = JSON.parse(message);
+           const users = message;
            expect(users.length).toEqual(1);
         }).then(() => {
             client.sendMessage({ verb: 'execute', data: { code: 'let a = 5;' }});
@@ -55,7 +51,7 @@ describe('happy path server interaction', () => {
             expect(parsedMessage.type).toEqual('executionSuccess');
             expect(parsedMessage.data.userId).not.toBeUndefined();
             expect(parsedMessage.data.code).toEqual('a;');
-            expect(parsedMessage.data.result).toEqual(5);
+            expect(parsedMessage.data.result).toEqual('5');
 
             done();
         });

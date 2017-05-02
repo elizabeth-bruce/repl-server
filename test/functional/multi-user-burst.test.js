@@ -19,8 +19,8 @@ describe('multi-user scale test', () => {
                 clients[index] = replClient(data.uuid);
             } 
         }).then(() => {
-            // Each user registration has three events transmitted with it
-            return clients[0].waitForMessages(3 * NUM_CLIENTS); 
+            // Each user registration has two events transmitted with it
+            return clients[0].waitForMessages(2 * NUM_CLIENTS); 
         }).then((messages) => {
             clients[0].sendMessage({ verb: 'execute', data: { code: 'let testArray = [];' }});
         }).then(() => {
@@ -42,7 +42,7 @@ describe('multi-user scale test', () => {
 
             expect(message.type).toEqual('executionSuccess');
             expect(message.data.code).toEqual('testArray.length;');
-            expect(message.data.result).toEqual(NUM_CLIENTS);
+            expect(message.data.result).toEqual(`${NUM_CLIENTS}`);
 
             done();
         });

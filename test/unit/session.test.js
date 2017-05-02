@@ -40,8 +40,9 @@ describe('Session', () => {
                 data: {
                     userId: 'abcde',
                     code: 'let a = 5',
+                    result: 'undefined'
                 },
-                type: 'executionSuccess'
+                type: 'executionSuccess',
             };
 
             session.userClient = MockSessionUserClient;
