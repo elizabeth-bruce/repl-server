@@ -16,12 +16,12 @@ describe('multi-user happy path server interaction', () => {
             uuid = data.uuid;
         }).then(() => {
             firstClient = replClient(uuid);
-            return firstClient.waitForMessages(2); 
+            return firstClient.waitForMessages(1);
         }).then((messages) => {
             firstClientId = JSON.parse(messages[0].data).data.userId;
         }).then(() => {
             secondClient = replClient(uuid);
-            return secondClient.waitForMessages(2);
+            return secondClient.waitForMessages(1);
         }).then((messages) => {
             secondClientId = JSON.parse(messages[0].data).data.userId;
         }).then(() => {

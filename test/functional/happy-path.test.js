@@ -20,14 +20,11 @@ describe('happy path server interaction', () => {
             return { uuid: sessionId};
         }).then((data) => {
             client = replClient(data.uuid);
-            return client.waitForMessages(2);
+            return client.waitForMessages(1);
         }).then((messages) => {
             const parsedMessages = messages.map((message) => message.data).map(JSON.parse);
-            expect(parsedMessages[0].type).toEqual('registerUser');
+            expect(parsedMessages[0].type).toEqual('connectUser');
             expect(parsedMessages[0].data.userId).not.toBeUndefined();
-
-            expect(parsedMessages[1].type).toEqual('connectUser');
-            expect(parsedMessages[1].data.userId).not.toBeUndefined();
         }).then(() => {
             return getActiveUsers(cookieJar, sessionId);
         }).then((message) => {

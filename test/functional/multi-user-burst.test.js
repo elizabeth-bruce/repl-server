@@ -19,8 +19,8 @@ describe('multi-user scale test', () => {
                 clients[index] = replClient(data.uuid);
             } 
         }).then(() => {
-            // Each user registration has two events transmitted with it
-            return clients[0].waitForMessages(2 * NUM_CLIENTS); 
+            // Each user registration has a connection event transmitted with it
+            return clients[0].waitForMessages(NUM_CLIENTS);
         }).then((messages) => {
             clients[0].sendMessage({ verb: 'execute', data: { code: 'let testArray = [];' }});
         }).then(() => {
