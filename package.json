@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "jasmine test/**/*.test.js"
+    "test": "jshint test/* lib/* && jasmine test/**/*.test.js",
+    "hint": "jshint test/* lib/*"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "jasmine": "^2.5.3",
+    "jshint": "^2.9.4",
     "redis-mock": "^0.17.0",
     "request-promise": "^4.2.0",
     "wait-until": "0.0.2",

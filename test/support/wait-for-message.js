@@ -13,7 +13,7 @@ const nextMessageWrapper = function(ws) {
             if (messageQueue.length === numMessages) {
                 resolve(messageQueue);
             }
-        }
+        };
     };
 
     ws.waitForMessages = function(numMessages) {

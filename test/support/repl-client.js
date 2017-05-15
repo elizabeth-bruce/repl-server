@@ -7,6 +7,6 @@ function replClient(uuid) {
     client.sendMessage = (message) => client.send(JSON.stringify(message));
 
     return client;
-};
+}
 
 module.exports = replClient;
