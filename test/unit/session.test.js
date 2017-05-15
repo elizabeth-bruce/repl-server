@@ -122,7 +122,7 @@ describe('Session', () => {
     describe('.registerAlias', () => {
         it('routes a registerAlias request to the correct client', () => {
             let session = new Session('abcde'),
-            instance = MockSessionUserClient.getInstance();
+            instance = MockSessionUserClient;
 
             session.userClient = MockSessionUserClient;
             spyOn(instance, 'setAlias').and.callThrough();
@@ -137,7 +137,7 @@ describe('Session', () => {
     describe('.registerUserId', () => {
         it('routes a registerUserId request to the correct client', () => {
             let session = new Session('abcde'),
-            instance = MockSessionUserClient.getInstance();
+            instance = MockSessionUserClient;
 
             session.userClient = MockSessionUserClient;
             spyOn(instance, 'setUserId').and.callThrough();
@@ -152,7 +152,7 @@ describe('Session', () => {
     describe('.getAlias', () => {
         it('routes a getAlias request to the correct client', (done) => {
             let session = new Session('abcde'),
-            instance = MockSessionUserClient.getInstance();
+            instance = MockSessionUserClient;
 
             session.userClient = MockSessionUserClient;
             spyOn(instance, 'getAlias').and.callThrough();
@@ -168,7 +168,7 @@ describe('Session', () => {
     describe('.addActiveUser', () => {
         it('updates the session state appropriately', (done) => {
             let session = new Session('abcde'),
-            instance = MockSessionUserClient.getInstance();
+            instance = MockSessionUserClient;
 
             session.userClient = MockSessionUserClient;
             
@@ -180,7 +180,7 @@ describe('Session', () => {
         });
         it('emits a connectUser event', (done) => {
             let session = new Session('abcde'),
-            instance = MockSessionUserClient.getInstance();
+            instance = MockSessionUserClient;
 
             session.userClient = MockSessionUserClient;
 
@@ -205,7 +205,7 @@ describe('Session', () => {
     describe('.removeActiveUser', () => {
         it('updates the session state appropriately', (done) => {
             let session = new Session('abcde'),
-            instance = MockSessionUserClient.getInstance();
+            instance = MockSessionUserClient;
 
             session.userClient = MockSessionUserClient;
 
@@ -220,7 +220,7 @@ describe('Session', () => {
 
         it('emits a disconnectUser event', (done) => {
             let session = new Session('abcde'),
-            instance = MockSessionUserClient.getInstance(),
+            instance = MockSessionUserClient,
             numMessages = 0;
 
             session.userClient = MockSessionUserClient;

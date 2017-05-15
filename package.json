@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "jasmine": "^2.5.3",
+    "redis-mock": "^0.17.0",
     "request-promise": "^4.2.0",
     "wait-until": "0.0.2",
     "websocket": "^1.0.24"

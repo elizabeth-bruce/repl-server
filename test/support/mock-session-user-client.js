@@ -7,8 +7,6 @@ const instanceObject = {
     setUserId: (sessionId, token, userId) => Promise.resolve(null)
 };
 
-const MockSessionUserClient = {
-    getInstance: () => instanceObject
-};
+const MockSessionUserClient = instanceObject;
 
 module.exports = MockSessionUserClient;
