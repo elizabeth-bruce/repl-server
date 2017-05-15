@@ -17,8 +17,6 @@ router.options('*', cors(corsOptions));
 
 router.post(
   '/',
-  // TODO: Reenable user authentication after MVP 
-  // passport.authenticate('api', { session: false }),
   cors(corsOptions),
   (req, res) => {
         res.json({ uuid: SessionRegistry.getInstance().add(uuid.v4()) });
