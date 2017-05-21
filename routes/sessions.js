@@ -1,5 +1,4 @@
 const express = require('express'),
-  passport = require('passport'),
   cors = require('cors'),
   uuid = require('node-uuid'),
   SessionRegistry = require('../lib/session-registry'),
@@ -19,7 +18,7 @@ router.post(
   '/',
   cors(corsOptions),
   (req, res) => {
-        res.json({ uuid: SessionRegistry.getInstance().add(uuid.v4()) });
+        res.json({ uuid: SessionRegistry.getInstance().add(uuid.v4())});
    }
 );
 

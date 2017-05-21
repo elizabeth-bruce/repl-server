@@ -1,9 +1,11 @@
-const http = require('http'), 
+const http = require('http'),
+    fs = require('fs'),
     express = require('express'),
     path = require('path'),
     logger = require('morgan'),
     cookieParser = require('cookie-parser'),
     expressSession = require('express-session'),
+    redisStore = require('connect-redis')(expressSession),
     bodyParser = require('body-parser'),
     addCloseHandler = require('./lib/close-handler'),
     config = require('./config/config');
@@ -13,26 +15,33 @@ let server = http.createServer(app);
 
 let wsExpress = require('express-ws')(app, server);
 
+addCloseHandler(server);
+
 const routes = require('./routes/index'),
-    users = require('./routes/users'),
     sessions = require('./routes/sessions');
 
-const cookieConfig = {
+const sessionStore = new redisStore();
+
+const sessionConfig = {
     cookie: {
       secure: false,
       httpOnly: false
     },
-    secret: config.SESSION_SECRET
+    store: sessionStore,
+    secret: app.get('env') === 'development' ? config.SESSION_SECRET : fs.readFileSync('session-secret.txt', 'utf8'),
+    resave: false,
+    saveUninitialized: true
 };
 
-addCloseHandler(server);
-app.use(expressSession(cookieConfig));
+app.use(expressSession(sessionConfig));
 
-app.use(logger('dev'));
+if (app.get('env') === 'development') {
+    app.use(logger('dev'));
+}
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('*', (req, res, next) => {
@@ -41,14 +50,13 @@ app.use('*', (req, res, next) => {
 });
 
 app.use('/sessions', sessions);
-app.use('/users', users);
 app.use('/', routes);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use((req, res, next) => {
+    let err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handlers
@@ -56,24 +64,22 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    console.log(err);
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
+    app.use((err, req, res, next) => {
+        console.log(err);
+        res.status(err.status || 500).send({
+            message: err.message,
+            error: err
+        });
     });
-  });
 }
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).send({
+        message: err.message,
+        error: {}
+    });
 });
 
 module.exports = {
