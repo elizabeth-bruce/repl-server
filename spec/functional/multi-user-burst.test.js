@@ -1,3 +1,5 @@
+/*jshint loopfunc:true */
+
 'use strict';
 
 const server = require('../../bin/www');
@@ -14,15 +16,23 @@ describe('multi-user scale test', () => {
         createSession().then((response) => {
             expect(response.uuid).not.toBeUndefined();
             return { uuid: response.uuid };
-        }).then((data) => {    
+        }).then((data) => {
+            let firstClientReady;
             for (let index = 0; index < clients.length; index++) {
-                clients[index] = replClient(data.uuid);
-            } 
+                clients[index] = new replClient(data.uuid);
+                let clientReady = clients[index].getCookies().then(() => {
+                    clients[index].connect();
+                });
+                if (index === 0) {
+                    firstClientReady = clientReady;
+                }
+            }
+            return firstClientReady;
         }).then(() => {
             // Each user registration has a connection event transmitted with it
             return clients[0].waitForMessages(NUM_CLIENTS);
         }).then((messages) => {
-            clients[0].sendMessage({ verb: 'execute', data: { code: 'let testArray = [];' }});
+            clients[0].execute('let testArray = [];');
         }).then(() => {
             return clients[0].waitForMessages(1);
         }).then((messages) => {
@@ -31,11 +41,11 @@ describe('multi-user scale test', () => {
             expect(message.data.code).toEqual('let testArray = [];');
         }).then(() => {
             clients.forEach((client) => {
-                client.sendMessage({ verb: 'execute', data: { code: 'testArray.push("a");' }});
+                client.execute('testArray.push("a");');
             });
             return clients[0].waitForMessages(NUM_CLIENTS);
         }).then(() => {
-            clients[0].sendMessage({ verb: 'execute', data: { code: 'testArray.length;' }});
+            clients[0].execute('testArray.length;');
             return clients[0].waitForMessages(1);
         }).then((messages) => {
             const message = JSON.parse(messages[0].data);

@@ -19,7 +19,10 @@ describe('happy path server interaction', () => {
             sessionId = response.uuid;
             return { uuid: sessionId};
         }).then((data) => {
-            client = replClient(data.uuid);
+            client = new replClient(data.uuid);
+            return client.getCookies();
+        }).then(() => {
+            client.connect();
             return client.waitForMessages(1);
         }).then((messages) => {
             const parsedMessages = messages.map((message) => message.data).map(JSON.parse);

@@ -15,12 +15,18 @@ describe('multi-user happy path server interaction', () => {
         }).then((data) => {
             uuid = data.uuid;
         }).then(() => {
-            firstClient = replClient(uuid);
+            firstClient = new replClient(uuid);
+            return firstClient.getCookies();
+        }).then((jar) => {
+            firstClient.connect();
             return firstClient.waitForMessages(1);
         }).then((messages) => {
             firstClientId = JSON.parse(messages[0].data).data.userId;
         }).then(() => {
-            secondClient = replClient(uuid);
+            secondClient = new replClient(uuid);
+            return secondClient.getCookies();
+        }).then(() => {
+            secondClient.connect();
             return secondClient.waitForMessages(1);
         }).then((messages) => {
             secondClientId = JSON.parse(messages[0].data).data.userId;
