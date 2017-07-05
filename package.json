@@ -1,8 +1,8 @@
 {
   "name": "repl-server",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "license": "MIT"
+  "license": "MIT",
   "scripts": {
     "start": "node ./bin/www",
     "test": "jshint spec/* lib/* && NODE_ENV=qa jasmine",

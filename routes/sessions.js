@@ -8,8 +8,19 @@ const express = require('express'),
 let router = express.Router();
 
 const corsOptions = {
-  origin: Config.FRONTEND_WHITELIST_DOMAIN,
-  credentials: true
+    origin: Config.FRONTEND_WHITELIST_DOMAIN,
+    credentials: true
+};
+
+
+const generateSessionId = function() {
+    const sampleString = 'abcdefghijklmnopqrstufwxyzABCDEFGHIJKLMNOPQRSTUFWXYZ1234567890';
+        idLength = 10;
+
+    return [...Array(idLength)].map(() => {
+        const samplePosition = Math.floor(Math.random() * sampleString.length);
+        return sampleString[samplePosition];
+    }).join('');
 };
 
 router.options('*', cors(corsOptions));
@@ -18,7 +29,13 @@ router.post(
   '/',
   cors(corsOptions),
   (req, res) => {
-        res.json({ uuid: SessionRegistry.getInstance().add(uuid.v4())});
+        let sessionId = generateSessionId();
+        while (SessionRegistry.getInstance().hasSession(sessionId)) {
+            sessionId = generateSessionId();
+        }
+
+        SessionRegistry.getInstance().add(sessionId);
+        res.json({ sessionId });
    }
 );
 

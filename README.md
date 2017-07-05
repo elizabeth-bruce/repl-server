@@ -150,7 +150,7 @@ The sessionId of the created session.
 }
 ```
 
-** GET /sessions/[sessionId]/activeUsers**
+**GET /sessions/[sessionId]/activeUsers**
 
 Returns the list of users currently connected to the session with the provided sessionId.
 
@@ -166,9 +166,6 @@ Returns the list of users currently connected to the session with the provided s
     ...
 ]
 ```
-#### Configuration
-
-
 
 #### Further Development
 

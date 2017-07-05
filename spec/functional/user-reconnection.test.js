@@ -15,11 +15,11 @@ describe('User who reconnects after connecting once to a session', () => {
             cookieJar = response;
             return createSession();
         }).then((response) => {
-            expect(response.uuid).not.toBeUndefined();
-            sessionId = response.uuid;
-            return { uuid: sessionId};
+            expect(response.sessionId).not.toBeUndefined();
+            sessionId = response.sessionId;
+            return { sessionId };
         }).then((data) => {
-            client = new replClient(data.uuid);
+            client = new replClient(data.sessionId);
             return client.getCookies();
         }).then(() => {
             client.connect();

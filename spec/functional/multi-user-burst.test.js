@@ -14,12 +14,12 @@ describe('multi-user scale test', () => {
         let clients = new Array(NUM_CLIENTS);
 
         createSession().then((response) => {
-            expect(response.uuid).not.toBeUndefined();
-            return { uuid: response.uuid };
+            expect(response.sessionId).not.toBeUndefined();
+            return { sessionId: response.sessionId };
         }).then((data) => {
             let firstClientReady;
             for (let index = 0; index < clients.length; index++) {
-                clients[index] = new replClient(data.uuid);
+                clients[index] = new replClient(data.sessionId);
                 let clientReady = clients[index].getCookies().then(() => {
                     clients[index].connect();
                 });

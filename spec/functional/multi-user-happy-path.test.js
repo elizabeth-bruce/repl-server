@@ -7,15 +7,15 @@ const createSession = require('../support/create-session');
 
 describe('multi-user happy path server interaction', () => {
     it('completes a user journey successfully', (done) => {
-        let uuid, firstClient, secondClient, firstClientId, secondClientId;
+        let sessionId, firstClient, secondClient, firstClientId, secondClientId;
 
         createSession().then((response) => {
-            expect(response.uuid).not.toBeUndefined();
-            return { uuid: response.uuid };
+            expect(response.sessionId).not.toBeUndefined();
+            return { sessionId: response.sessionId };
         }).then((data) => {
-            uuid = data.uuid;
+            sessionId = data.sessionId;
         }).then(() => {
-            firstClient = new replClient(uuid);
+            firstClient = new replClient(sessionId);
             return firstClient.getCookies();
         }).then((jar) => {
             firstClient.connect();
@@ -23,7 +23,7 @@ describe('multi-user happy path server interaction', () => {
         }).then((messages) => {
             firstClientId = JSON.parse(messages[0].data).data.userId;
         }).then(() => {
-            secondClient = new replClient(uuid);
+            secondClient = new replClient(sessionId);
             return secondClient.getCookies();
         }).then(() => {
             secondClient.connect();
