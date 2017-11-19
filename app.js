@@ -17,8 +17,7 @@ let wsExpress = require('express-ws')(app, server);
 
 addCloseHandler(server);
 
-const routes = require('./routes/index'),
-    sessions = require('./routes/sessions');
+const sessions = require('./routes/sessions');
 
 const sessionStore = new redisStore();
 
@@ -50,7 +49,6 @@ app.use('*', (req, res, next) => {
 });
 
 app.use('/sessions', sessions);
-app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
