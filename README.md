@@ -2,13 +2,15 @@
 
 Service that allows multiple people to view and manipulate a shared Node REPL instance.
 
-### Installation
+### Quick Start Guide
 
-`repl-server`requires a working instance of Redis on the server with the default port open. Once this is available, 
+`repl-server`requires a working instance of Redis on the server. Once this is available,
 
 ```
-npm install
+npm start
 ```
+
+`repl-server` also is fully Dockerized and can be run in a container via `docker-compose`.
 
 ### Overview
 

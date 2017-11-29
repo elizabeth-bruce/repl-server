@@ -10,6 +10,8 @@ const http = require('http'),
     addCloseHandler = require('./lib/close-handler'),
     config = require('./config/config');
 
+const REDIS_PORT = process.env.REDIS_PORT || config.REDIS_PORT;
+
 let app = express();
 let server = http.createServer(app);
 
@@ -19,7 +21,7 @@ addCloseHandler(server);
 
 const sessions = require('./routes/sessions');
 
-const sessionStore = new redisStore();
+const sessionStore = new redisStore({ url: REDIS_PORT });
 
 const sessionConfig = {
     cookie: {
@@ -61,7 +63,7 @@ app.use((req, res, next) => {
 
 // development error handler
 // will print stacktrace
-if (app.get('env') === 'development') {
+if (app.get('env') === 'development' || app.get('env') === 'qa') {
     app.use((err, req, res, next) => {
         console.log(err);
         res.status(err.status || 500).send({

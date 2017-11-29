@@ -1,0 +1,14 @@
+version: '3'
+services:
+  web:
+    build: .
+    tty: true
+    command: 'bash'
+    stdin_open: true
+    environment:
+      REDIS_PORT: "redis://redis:6379"
+      FRONTEND_WHITELIST_DOMAIN: "http://localhost:80"
+    ports:
+      - "3000:3000"
+  redis:
+    image: "redis:3.2.11"

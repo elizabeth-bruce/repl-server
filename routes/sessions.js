@@ -7,8 +7,10 @@ const express = require('express'),
  
 let router = express.Router();
 
+const FRONTEND_WHITELIST_DOMAIN = process.env.FRONTEND_WHITELIST_DOMAIN || Config.FRONTEND_WHITELIST_DOMAIN;
+
 const corsOptions = {
-    origin: Config.FRONTEND_WHITELIST_DOMAIN,
+    origin: FRONTEND_WHITELIST_DOMAIN,
     credentials: true
 };
 
@@ -82,6 +84,7 @@ router.post('/:sessionId/alias', cors(corsOptions), (req, res) => {
 // that enables identification/communication with the rest of the endpoints in /sessions
 router.get('/touch', cors(corsOptions), (req, res) => {
     let session = req.session;
+
     if (!session.token) {
         session.token = uuid.v4();
         session.save();
